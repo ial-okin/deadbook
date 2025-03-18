@@ -13,6 +13,7 @@ export type Survivor = {
   id: string;
   name: string;
   age: number;
+  is_infected: boolean;
   gender: "M" | "F";
   latitude: number;
   longitude: number;

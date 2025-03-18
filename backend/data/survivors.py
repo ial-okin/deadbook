@@ -37,19 +37,28 @@ def register(db: Session, survivor: SurvivorRegister):
 
 
 # Get all Survivors
-def get(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(Survivor).filter(Survivor.is_infected == False).offset(skip).limit(limit).all()
+def get(db: Session, skip: int = 0, limit: int = 10, include_infected: bool = False):
+    query = db.query(Survivor)
+    
+    if include_infected == False:
+        query = query.filter(Survivor.is_infected == False)
+    
+    return query.offset(skip).limit(limit).all()
 
 # Get all Survivors with inventory
-def get_with_inventory(db: Session, skip: int = 0, limit: int = 10):
+def get_with_inventory(db: Session, skip: int = 0, limit: int = 10, include_infected: bool = False):
+    query = db.query(Survivor)
+
+    if include_infected == False:
+        query = query.filter(Survivor.is_infected == False)
+
     survivors = (
-        db.query(Survivor)
-            .filter(Survivor.is_infected == False)
-            .options(joinedload(Survivor.inventory).joinedload(inventory.Inventory.item))
-            .offset(skip)
-            .limit(limit)
-            .all()
-    )
+        query.options(joinedload(Survivor.inventory)
+             .joinedload(inventory.Inventory.item))
+             .offset(skip)
+             .limit(limit)
+             .all()
+        )
 
     return [
         {
@@ -73,7 +82,6 @@ def get_by_id(db: Session, survivor_id: uuid.UUID):
     return (
         db.query(Survivor)
             .filter(Survivor.id == survivor_id)
-            .filter(Survivor.is_infected == False)
             .first()
         )
 
@@ -82,7 +90,6 @@ def get_detailed_by_id_(db: Session, survivor_id: uuid.UUID):
     db_survivor = (
         db.query(Survivor)
             .filter(Survivor.id == survivor_id)
-            .filter(Survivor.is_infected == False)
             .options(joinedload(Survivor.inventory).joinedload(inventory.Inventory.item))
             .first()
         )

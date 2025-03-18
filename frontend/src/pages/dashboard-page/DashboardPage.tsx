@@ -2,7 +2,10 @@ import { Dashboard } from "@/pages/dashboard-page/components/Dashboard";
 import { useSurvivorsFetch } from "@/features/survivors/hooks/useSurvivorsFetch";
 
 export const DashboardPage = () => {
-  const { survivors, isLoading, error } = useSurvivorsFetch();
+  const { survivors, isLoading, error } = useSurvivorsFetch({
+    include_infected: true,
+  });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }

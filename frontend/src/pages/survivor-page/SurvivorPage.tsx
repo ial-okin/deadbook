@@ -17,7 +17,7 @@ export const SurvivorPage = () => {
   if (!id || !survivor) {
     return (
       <div className="container py-8">
-        <p>Survivor id not provided</p>
+        <p>Survivor not found...</p>
         <Button asChild className="mt-4">
           <NavLink to={DashboardPageUrl}>Back to Dashboard</NavLink>
         </Button>

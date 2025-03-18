@@ -21,13 +21,13 @@ def create_survivor(survivor: models.SurvivorRegister, db: Session = Depends(get
 
 # Get a list of survivors
 @survivors_router.get("/", response_model=List[models.SurvivorResponse])
-def get_survivors(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    db_survivors = survivors.get(db=db, skip=skip, limit=limit)
+def get_survivors(skip: int = 0, limit: int = 10, include_infected: bool = False, db: Session = Depends(get_db)):
+    db_survivors = survivors.get(db=db, skip=skip, limit=limit, include_infected=include_infected)
     return db_survivors
 
 # Get a list of survivors with inventory
 @survivors_router.get("/detailed")
-def get_survivors(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+def get_survivors(skip: int = 0, limit: int = 10, include_infected: bool = False, db: Session = Depends(get_db)):
     db_survivors = survivors.get_with_inventory(db=db, skip=skip, limit=limit)
     return db_survivors
 

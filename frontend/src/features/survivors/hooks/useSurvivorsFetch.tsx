@@ -3,22 +3,29 @@ import { useQuery } from "@tanstack/react-query";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const fetchSurvivors = async () => {
-  const res = await fetch(`${API_URL}/survivors`);
+const fetchSurvivors = async (include_infected: boolean) => {
+  const res = await fetch(
+    `${API_URL}/survivors?include_infected=${include_infected}`
+  );
   if (!res.ok) {
     throw new Error("Failed to fetch survivors");
   }
   return res.json();
 };
 
-export const useSurvivorsFetch = () => {
+type UseSurvivorsFetchProps = {
+  include_infected: boolean;
+};
+export const useSurvivorsFetch = (props?: UseSurvivorsFetchProps) => {
+  const include_infected = props?.include_infected ?? false;
+
   const {
     data = [],
     error,
     isLoading,
   } = useQuery<Survivor[]>({
     queryKey: ["survivors"],
-    queryFn: fetchSurvivors,
+    queryFn: () => fetchSurvivors(include_infected),
   });
 
   return {

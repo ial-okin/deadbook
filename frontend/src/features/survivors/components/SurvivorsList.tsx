@@ -2,6 +2,7 @@ import { NavLink } from "react-router";
 
 import { Eye, Package } from "lucide-react";
 
+import { SurvivorStatusBadge } from "@/components/SurvivorStatusBadge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -11,8 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Survivor } from "@/models";
 import { formatLocation } from "@/lib/utils";
+import { Survivor } from "@/models";
 import { SurvivorPageUrl, TradePageUrl } from "@/pages/urls";
 
 export function SurvivorsList({ survivors }: { survivors: Survivor[] }) {
@@ -28,6 +29,7 @@ export function SurvivorsList({ survivors }: { survivors: Survivor[] }) {
                 <TableHead>Age</TableHead>
                 <TableHead>Gender</TableHead>
                 <TableHead>Last Location</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -52,6 +54,9 @@ export function SurvivorsList({ survivors }: { survivors: Survivor[] }) {
                         longitude: survivor.longitude,
                       })}
                     </TableCell>
+                    <TableCell>
+                      <SurvivorStatusBadge isInfected={survivor.is_infected} />
+                    </TableCell>
 
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -63,14 +68,16 @@ export function SurvivorsList({ survivors }: { survivors: Survivor[] }) {
                             <span className="sr-only">View details</span>
                           </NavLink>
                         </Button>
-                        <Button variant="ghost" size="icon" asChild>
-                          <NavLink
-                            to={`${TradePageUrl}?trader1_id=${survivor.id}`}
-                          >
-                            <Package className="mr-2 h-4 w-4" />
-                            <span className="sr-only">Trade</span>
-                          </NavLink>
-                        </Button>
+                        {!survivor.is_infected && (
+                          <Button variant="ghost" size="icon" asChild>
+                            <NavLink
+                              to={`${TradePageUrl}?trader1_id=${survivor.id}`}
+                            >
+                              <Package className="mr-2 h-4 w-4" />
+                              <span className="sr-only">Trade</span>
+                            </NavLink>
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -121,12 +128,14 @@ export function SurvivorsList({ survivors }: { survivors: Survivor[] }) {
                       View
                     </NavLink>
                   </Button>
-                  <Button variant="ghost" size="sm" asChild>
-                    <NavLink to={`${TradePageUrl}?trader1_id=${survivor.id}`}>
-                      <Package className="h-4 w-4 mr-1" />
-                      Trade
-                    </NavLink>
-                  </Button>
+                  {!survivor.is_infected && (
+                    <Button variant="ghost" size="sm" asChild>
+                      <NavLink to={`${TradePageUrl}?trader1_id=${survivor.id}`}>
+                        <Package className="h-4 w-4 mr-1" />
+                        Trade
+                      </NavLink>
+                    </Button>
+                  )}
                 </div>
               </div>
             ))

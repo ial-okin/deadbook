@@ -4,8 +4,6 @@ import { useDialog } from "@/hooks/useDialog";
 import { SurvivorDetailed } from "@/models";
 import { useQueryClient } from "@tanstack/react-query";
 import { InfectionReportForm } from "../components/InfectionReportForm";
-import { useNavigate } from "react-router";
-import { DashboardPageUrl } from "@/pages/urls";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const INFECTION_THRESHOLD = import.meta.env.VITE_INFECTION_THRESHOLD;
@@ -48,7 +46,6 @@ const reportSurvivorAsInfected = async ({
 export function useSurvivorInfectionReport() {
   const { openDialog, closeDialog } = useDialog();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const onReportConfirmed = async (report: Report) => {
     try {
@@ -65,10 +62,6 @@ export function useSurvivorInfectionReport() {
         ? "Survivor was marked as infected"
         : "Survivor was reported";
       toast.success(reportMessage);
-
-      if (wasMarkedAsInfected) {
-        navigate(DashboardPageUrl);
-      }
     } catch (error) {
       console.error(error);
       toast.error(`${error}`);

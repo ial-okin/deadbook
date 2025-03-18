@@ -17,6 +17,7 @@ import { ChangeLocationButton } from "@/features/survivors/components/ChangeLoca
 import { SurvivorDetailed } from "@/models";
 import { useSurvivorInfectionReport } from "../hooks/useSurvivorInfectionReport";
 import { DashboardPageUrl, TradePageUrl } from "@/pages/urls";
+import { SurvivorStatusBadge } from "@/components/SurvivorStatusBadge";
 
 type SurvivorProfileOverviewProps = {
   survivor: SurvivorDetailed;
@@ -44,12 +45,7 @@ export const SurvivorProfileOverview = ({
                 {survivor.age} years old • {survivor.gender}
               </CardDescription>
             </div>
-            <Badge
-              variant="outline"
-              className="bg-green-50 text-green-700 border-green-200"
-            >
-              Healthy
-            </Badge>
+            <SurvivorStatusBadge isInfected={survivor.is_infected} />
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -64,11 +60,13 @@ export const SurvivorProfileOverview = ({
               longitude={survivor.longitude}
             />
 
-            <ChangeLocationButton
-              survivor_id={survivor.id}
-              latitude={survivor.latitude}
-              longitude={survivor.longitude}
-            />
+            {!survivor.is_infected && (
+              <ChangeLocationButton
+                survivor_id={survivor.id}
+                latitude={survivor.latitude}
+                longitude={survivor.longitude}
+              />
+            )}
           </div>
 
           <Separator />
@@ -86,26 +84,28 @@ export const SurvivorProfileOverview = ({
 
           <Separator />
         </CardContent>
-        <CardFooter className="flex flex-col sm:flex-row justify-end gap-4 mt-6">
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-            <Button variant="outline" className="w-full sm:w-auto" asChild>
-              <NavLink to={`${TradePageUrl}?trader1_id=${survivor.id}`}>
-                <Package className="mr-2 h-4 w-4" />
-                Trade Resources
-              </NavLink>
-            </Button>
-            <Button
-              variant={"destructive"}
-              className="w-full sm:w-auto"
-              onClick={() => reportInfection(survivor)}
-            >
-              <>
-                <AlertTriangle className="mr-2 h-4 w-4" />
-                Report Infection
-              </>
-            </Button>
-          </div>
-        </CardFooter>
+        {!survivor.is_infected && (
+          <CardFooter className="flex flex-col sm:flex-row justify-end gap-4 mt-6">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto" asChild>
+                <NavLink to={`${TradePageUrl}?trader1_id=${survivor.id}`}>
+                  <Package className="mr-2 h-4 w-4" />
+                  Trade Resources
+                </NavLink>
+              </Button>
+              <Button
+                variant={"destructive"}
+                className="w-full sm:w-auto"
+                onClick={() => reportInfection(survivor)}
+              >
+                <>
+                  <AlertTriangle className="mr-2 h-4 w-4" />
+                  Report Infection
+                </>
+              </Button>
+            </div>
+          </CardFooter>
+        )}
       </Card>
     </div>
   );
